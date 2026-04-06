@@ -1,0 +1,1012 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ad Analyzer 🚀 — Fix Your Ads Before You Waste Money</title>
+  <style>
+    @import url('https://fonts.googleapis.com/css2?family=Syne:wght@400;600;700;800&family=DM+Sans:ital,wght@0,300;0,400;0,500;1,300&display=swap');
+
+    /* ── Reset & Base ─────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg:        #09090f;
+      --surface:   #111118;
+      --surface-2: #18181f;
+      --border:    rgba(255,255,255,0.07);
+      --text:      #f0f0f5;
+      --muted:     #7a7a8c;
+      --accent:    #f5a623;
+      --accent-2:  #f87c6d;
+      --green:     #4ade80;
+      --blue:      #60a5fa;
+      --radius:    14px;
+      --font-head: 'Syne', sans-serif;
+      --font-body: 'DM Sans', sans-serif;
+    }
+
+    html { scroll-behavior: smooth; }
+
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    /* ── Noise texture overlay ─────────────────────────────── */
+    body::before {
+      content: '';
+      position: fixed; inset: 0;
+      background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.035'/%3E%3C/svg%3E");
+      pointer-events: none;
+      z-index: 0;
+    }
+
+    /* ── Navigation ────────────────────────────────────────── */
+    nav {
+      position: fixed; top: 0; left: 0; right: 0;
+      z-index: 100;
+      display: flex; align-items: center; justify-content: space-between;
+      padding: 20px 40px;
+      background: rgba(9,9,15,0.75);
+      backdrop-filter: blur(18px);
+      border-bottom: 1px solid var(--border);
+    }
+
+    .logo {
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: 1.15rem;
+      letter-spacing: -0.02em;
+      color: var(--text);
+      text-decoration: none;
+      display: flex; align-items: center; gap: 6px;
+    }
+
+    .logo-dot {
+      width: 8px; height: 8px;
+      border-radius: 50%;
+      background: var(--accent);
+      display: inline-block;
+      animation: pulse-dot 2.4s ease-in-out infinite;
+    }
+
+    @keyframes pulse-dot {
+      0%, 100% { opacity: 1; transform: scale(1); }
+      50%       { opacity: 0.5; transform: scale(0.7); }
+    }
+
+    nav .cta-nav {
+      font-size: 0.85rem;
+      font-weight: 500;
+      color: var(--bg);
+      background: var(--text);
+      border: none;
+      border-radius: 8px;
+      padding: 9px 20px;
+      cursor: pointer;
+      transition: opacity 0.2s;
+      font-family: var(--font-body);
+    }
+    nav .cta-nav:hover { opacity: 0.85; }
+
+    /* ── Sections layout ───────────────────────────────────── */
+    section { position: relative; z-index: 1; }
+
+    /* ── Hero ──────────────────────────────────────────────── */
+    #hero {
+      min-height: 100vh;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+      text-align: center;
+      padding: 120px 24px 80px;
+      overflow: hidden;
+    }
+
+    /* Radial glow blobs */
+    .blob {
+      position: absolute;
+      border-radius: 50%;
+      filter: blur(90px);
+      opacity: 0.22;
+      pointer-events: none;
+    }
+    .blob-1 {
+      width: 580px; height: 580px;
+      background: radial-gradient(circle, #f5a623 0%, transparent 70%);
+      top: -120px; left: -160px;
+      animation: drift 12s ease-in-out infinite alternate;
+    }
+    .blob-2 {
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, #f87c6d 0%, transparent 70%);
+      bottom: -80px; right: -120px;
+      animation: drift 15s ease-in-out infinite alternate-reverse;
+    }
+    .blob-3 {
+      width: 350px; height: 350px;
+      background: radial-gradient(circle, #60a5fa 0%, transparent 70%);
+      top: 40%; left: 50%;
+      transform: translate(-50%, -50%);
+      animation: drift 18s ease-in-out infinite alternate;
+      opacity: 0.1;
+    }
+
+    @keyframes drift {
+      from { transform: translate(0, 0) scale(1); }
+      to   { transform: translate(40px, 30px) scale(1.08); }
+    }
+
+    .tag {
+      display: inline-flex; align-items: center; gap: 7px;
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.08em;
+      text-transform: uppercase;
+      color: var(--accent);
+      background: rgba(245,166,35,0.1);
+      border: 1px solid rgba(245,166,35,0.25);
+      border-radius: 100px;
+      padding: 6px 14px;
+      margin-bottom: 32px;
+      animation: fade-up 0.8s ease both;
+    }
+
+    h1 {
+      font-family: var(--font-head);
+      font-weight: 800;
+      font-size: clamp(2.4rem, 6vw, 5rem);
+      line-height: 1.06;
+      letter-spacing: -0.035em;
+      max-width: 820px;
+      animation: fade-up 0.8s 0.1s ease both;
+    }
+
+    h1 .highlight {
+      background: linear-gradient(120deg, var(--accent), var(--accent-2));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+
+    .subtitle {
+      margin-top: 20px;
+      font-size: clamp(1rem, 2.2vw, 1.2rem);
+      font-weight: 300;
+      color: var(--muted);
+      max-width: 520px;
+      line-height: 1.65;
+      animation: fade-up 0.8s 0.2s ease both;
+    }
+
+    .hero-cta {
+      margin-top: 44px;
+      display: flex; gap: 14px; flex-wrap: wrap; justify-content: center;
+      animation: fade-up 0.8s 0.3s ease both;
+    }
+
+    .btn-primary {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 15px 34px;
+      font-family: var(--font-body);
+      font-size: 1rem;
+      font-weight: 500;
+      color: var(--bg);
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+      border: none;
+      border-radius: 10px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: transform 0.2s, box-shadow 0.2s;
+      box-shadow: 0 8px 32px rgba(245,166,35,0.3);
+    }
+    .btn-primary:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 14px 40px rgba(245,166,35,0.45);
+    }
+    .btn-primary:active { transform: translateY(0); }
+
+    .btn-ghost {
+      display: inline-flex; align-items: center; gap: 8px;
+      padding: 15px 28px;
+      font-family: var(--font-body);
+      font-size: 1rem;
+      font-weight: 400;
+      color: var(--muted);
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 10px;
+      cursor: pointer;
+      text-decoration: none;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .btn-ghost:hover { border-color: rgba(255,255,255,0.2); color: var(--text); }
+
+    /* Stats strip */
+    .stats {
+      margin-top: 72px;
+      display: flex; gap: 48px; flex-wrap: wrap; justify-content: center;
+      animation: fade-up 0.8s 0.45s ease both;
+    }
+    .stat { text-align: center; }
+    .stat-value {
+      font-family: var(--font-head);
+      font-size: 1.9rem;
+      font-weight: 700;
+      background: linear-gradient(120deg, var(--accent), var(--text));
+      -webkit-background-clip: text;
+      -webkit-text-fill-color: transparent;
+      background-clip: text;
+    }
+    .stat-label { font-size: 0.82rem; color: var(--muted); margin-top: 4px; }
+
+    /* ── Divider ───────────────────────────────────────────── */
+    .divider {
+      height: 1px;
+      background: linear-gradient(90deg, transparent, var(--border) 30%, var(--border) 70%, transparent);
+      margin: 0 40px;
+    }
+
+    /* ── Analyzer Section ──────────────────────────────────── */
+    #analyzer {
+      padding: 100px 24px;
+      display: flex; flex-direction: column; align-items: center;
+    }
+
+    .section-label {
+      font-size: 0.78rem;
+      font-weight: 500;
+      letter-spacing: 0.1em;
+      text-transform: uppercase;
+      color: var(--accent);
+      margin-bottom: 14px;
+    }
+
+    .section-title {
+      font-family: var(--font-head);
+      font-size: clamp(1.8rem, 4vw, 2.8rem);
+      font-weight: 700;
+      letter-spacing: -0.03em;
+      text-align: center;
+      max-width: 560px;
+      margin-bottom: 12px;
+    }
+
+    .section-sub {
+      font-size: 1rem;
+      color: var(--muted);
+      text-align: center;
+      max-width: 420px;
+      margin-bottom: 48px;
+      line-height: 1.6;
+    }
+
+    /* Input card */
+    .input-card {
+      width: 100%; max-width: 720px;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .input-card::before {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 2px;
+      background: linear-gradient(90deg, var(--accent), var(--accent-2));
+      opacity: 0.7;
+    }
+
+    .input-header {
+      display: flex; align-items: center; gap: 10px;
+      margin-bottom: 20px;
+    }
+
+    .input-icon {
+      width: 36px; height: 36px;
+      background: rgba(245,166,35,0.12);
+      border: 1px solid rgba(245,166,35,0.2);
+      border-radius: 9px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 1rem;
+    }
+
+    .input-header-text { font-weight: 500; font-size: 0.95rem; }
+    .input-header-sub  { font-size: 0.8rem; color: var(--muted); }
+
+    textarea {
+      width: 100%;
+      min-height: 180px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 18px;
+      color: var(--text);
+      font-family: var(--font-body);
+      font-size: 0.95rem;
+      line-height: 1.65;
+      resize: vertical;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      outline: none;
+    }
+    textarea::placeholder { color: var(--muted); }
+    textarea:focus {
+      border-color: rgba(245,166,35,0.4);
+      box-shadow: 0 0 0 3px rgba(245,166,35,0.08);
+    }
+
+    .char-count { font-size: 0.78rem; color: var(--muted); text-align: right; margin-top: 8px; }
+
+    .btn-analyze {
+      margin-top: 20px;
+      width: 100%;
+      padding: 16px;
+      font-family: var(--font-head);
+      font-size: 1rem;
+      font-weight: 600;
+      letter-spacing: 0.02em;
+      color: var(--bg);
+      background: linear-gradient(135deg, var(--accent) 0%, var(--accent-2) 100%);
+      border: none;
+      border-radius: 12px;
+      cursor: pointer;
+      transition: transform 0.2s, box-shadow 0.2s, opacity 0.2s;
+      box-shadow: 0 6px 24px rgba(245,166,35,0.28);
+      display: flex; align-items: center; justify-content: center; gap: 10px;
+    }
+    .btn-analyze:hover:not(:disabled) {
+      transform: translateY(-2px);
+      box-shadow: 0 12px 36px rgba(245,166,35,0.42);
+    }
+    .btn-analyze:disabled { opacity: 0.65; cursor: not-allowed; }
+
+    /* Spinner */
+    .spinner {
+      width: 18px; height: 18px;
+      border: 2px solid rgba(9,9,15,0.3);
+      border-top-color: var(--bg);
+      border-radius: 50%;
+      animation: spin 0.75s linear infinite;
+      display: none;
+    }
+    .spinner.active { display: block; }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Results Section ───────────────────────────────────── */
+    #results { display: none; padding: 0 24px 100px; }
+
+    .results-inner {
+      max-width: 720px; margin: 0 auto;
+      display: flex; flex-direction: column; gap: 20px;
+      animation: fade-up 0.6s ease both;
+    }
+
+    .result-header {
+      text-align: center;
+      margin-bottom: 8px;
+    }
+    .result-header h2 {
+      font-family: var(--font-head);
+      font-size: 1.6rem;
+      font-weight: 700;
+      letter-spacing: -0.03em;
+    }
+    .result-header p { font-size: 0.9rem; color: var(--muted); margin-top: 6px; }
+
+    /* Score card */
+    .score-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 32px;
+      display: flex; align-items: center; gap: 32px;
+      position: relative; overflow: hidden;
+    }
+    .score-card::before {
+      content: '';
+      position: absolute; top: 0; left: 0; right: 0; height: 2px;
+      background: linear-gradient(90deg, var(--green), #22c55e);
+    }
+
+    .score-ring {
+      flex-shrink: 0;
+      width: 100px; height: 100px;
+      position: relative;
+    }
+    .score-ring svg { transform: rotate(-90deg); }
+    .score-ring .ring-bg { fill: none; stroke: var(--surface-2); stroke-width: 8; }
+    .score-ring .ring-fill {
+      fill: none; stroke-width: 8;
+      stroke-linecap: round;
+      stroke: url(#scoreGrad);
+      stroke-dasharray: 283;
+      stroke-dashoffset: 283;
+      transition: stroke-dashoffset 1.2s cubic-bezier(0.4,0,0.2,1);
+    }
+    .score-value {
+      position: absolute;
+      inset: 0;
+      display: flex; flex-direction: column;
+      align-items: center; justify-content: center;
+    }
+    .score-num {
+      font-family: var(--font-head);
+      font-size: 1.9rem;
+      font-weight: 800;
+      line-height: 1;
+    }
+    .score-label { font-size: 0.7rem; color: var(--muted); margin-top: 2px; }
+
+    .score-info h3 {
+      font-family: var(--font-head);
+      font-size: 1.2rem;
+      font-weight: 700;
+      margin-bottom: 6px;
+    }
+    .score-info p { font-size: 0.9rem; color: var(--muted); line-height: 1.55; }
+
+    /* Suggestions card */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 28px 32px;
+      position: relative; overflow: hidden;
+    }
+
+    .card-title {
+      display: flex; align-items: center; gap: 10px;
+      font-family: var(--font-head);
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 20px;
+    }
+    .card-icon {
+      width: 30px; height: 30px;
+      border-radius: 8px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.9rem;
+    }
+    .icon-yellow { background: rgba(245,166,35,0.12); }
+    .icon-blue   { background: rgba(96,165,250,0.12); }
+    .icon-green  { background: rgba(74,222,128,0.12); }
+
+    .suggestions-list {
+      list-style: none;
+      display: flex; flex-direction: column; gap: 12px;
+    }
+    .suggestions-list li {
+      display: flex; gap: 12px;
+      font-size: 0.9rem;
+      line-height: 1.55;
+      color: var(--muted);
+    }
+    .suggestion-dot {
+      flex-shrink: 0;
+      width: 20px; height: 20px;
+      border-radius: 50%;
+      background: rgba(245,166,35,0.12);
+      border: 1px solid rgba(245,166,35,0.25);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 0.65rem;
+      color: var(--accent);
+      font-weight: 700;
+      margin-top: 1px;
+    }
+
+    /* Improved version */
+    .improved-box {
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: 12px;
+      padding: 20px;
+      font-size: 0.92rem;
+      line-height: 1.7;
+      color: var(--text);
+      white-space: pre-wrap;
+    }
+
+    .copy-btn {
+      margin-top: 16px;
+      display: flex; align-items: center; gap: 8px;
+      padding: 10px 20px;
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: 9px;
+      color: var(--muted);
+      font-family: var(--font-body);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: border-color 0.2s, color 0.2s;
+    }
+    .copy-btn:hover { border-color: rgba(255,255,255,0.2); color: var(--text); }
+    .copy-btn.copied { color: var(--green); border-color: rgba(74,222,128,0.3); }
+
+    /* ── Error state ───────────────────────────────────────── */
+    .error-box {
+      background: rgba(248,124,109,0.07);
+      border: 1px solid rgba(248,124,109,0.22);
+      border-radius: 14px;
+      padding: 20px 24px;
+      color: #f87c6d;
+      font-size: 0.9rem;
+      display: flex; align-items: flex-start; gap: 12px;
+    }
+
+    /* ── Features strip ────────────────────────────────────── */
+    #features {
+      padding: 80px 24px;
+      display: flex; flex-direction: column; align-items: center;
+    }
+    .features-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+      gap: 16px;
+      max-width: 900px; width: 100%;
+      margin-top: 48px;
+    }
+    .feature-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 16px;
+      padding: 28px;
+      transition: border-color 0.2s, transform 0.2s;
+    }
+    .feature-card:hover { border-color: rgba(245,166,35,0.25); transform: translateY(-3px); }
+    .feature-card .fi { font-size: 1.5rem; margin-bottom: 14px; }
+    .feature-card h3 {
+      font-family: var(--font-head);
+      font-size: 1rem;
+      font-weight: 700;
+      margin-bottom: 8px;
+    }
+    .feature-card p { font-size: 0.85rem; color: var(--muted); line-height: 1.55; }
+
+    /* ── Footer ────────────────────────────────────────────── */
+    footer {
+      border-top: 1px solid var(--border);
+      padding: 40px 40px;
+      display: flex; align-items: center; justify-content: space-between;
+      flex-wrap: wrap; gap: 20px;
+    }
+    footer .logo { font-size: 1rem; }
+    footer p { font-size: 0.85rem; color: var(--muted); }
+
+    /* ── Animations ────────────────────────────────────────── */
+    @keyframes fade-up {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── Responsive ────────────────────────────────────────── */
+    @media (max-width: 600px) {
+      nav { padding: 16px 20px; }
+      .score-card { flex-direction: column; text-align: center; }
+      footer { flex-direction: column; text-align: center; }
+      .stats { gap: 28px; }
+      .input-card { padding: 24px 20px; }
+      .card { padding: 24px 20px; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navigation -->
+  <nav>
+    <a href="#" class="logo">
+      <span class="logo-dot"></span>Ad Analyzer 🚀
+    </a>
+    <button class="cta-nav" onclick="scrollToAnalyzer()">Try It Free</button>
+  </nav>
+
+  <!-- ── Hero ── -->
+  <section id="hero">
+    <div class="blob blob-1"></div>
+    <div class="blob blob-2"></div>
+    <div class="blob blob-3"></div>
+
+    <div class="tag">✦ AI-Powered Ad Intelligence</div>
+
+    <h1>Fix Your Ads Before You <span class="highlight">Waste Money</span></h1>
+
+    <p class="subtitle">
+      Analyze your ad copy and improve performance instantly. Get a score, actionable suggestions, and a rewritten version — in seconds.
+    </p>
+
+    <div class="hero-cta">
+      <button class="btn-primary" onclick="scrollToAnalyzer()">
+        ⚡ Analyze My Ad
+      </button>
+      <a href="#features" class="btn-ghost">See how it works →</a>
+    </div>
+
+    <div class="stats">
+      <div class="stat">
+        <div class="stat-value">10k+</div>
+        <div class="stat-label">Ads analyzed</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">2.4×</div>
+        <div class="stat-label">Avg. CTR lift</div>
+      </div>
+      <div class="stat">
+        <div class="stat-value">&lt;5s</div>
+        <div class="stat-label">Analysis time</div>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ── Features ── -->
+  <section id="features">
+    <div class="section-label">What you get</div>
+    <h2 class="section-title">Everything to sharpen your ad copy</h2>
+    <p class="section-sub">No fluff. Just a clear score, sharp suggestions, and a better version — ready to use.</p>
+
+    <div class="features-grid">
+      <div class="feature-card">
+        <div class="fi">🎯</div>
+        <h3>Performance Score</h3>
+        <p>Get an objective 0–100 score based on clarity, urgency, and relevance signals.</p>
+      </div>
+      <div class="feature-card">
+        <div class="fi">💡</div>
+        <h3>Actionable Suggestions</h3>
+        <p>Specific, prioritised fixes — not generic advice. Know exactly what to change and why.</p>
+      </div>
+      <div class="feature-card">
+        <div class="fi">✨</div>
+        <h3>Rewritten Version</h3>
+        <p>A polished, improved version of your ad — copy it and launch in minutes.</p>
+      </div>
+      <div class="feature-card">
+        <div class="fi">⚡</div>
+        <h3>Instant Results</h3>
+        <p>No waiting. Analysis completes in under 5 seconds so you can iterate fast.</p>
+      </div>
+    </div>
+  </section>
+
+  <div class="divider"></div>
+
+  <!-- ── Analyzer ── -->
+  <section id="analyzer">
+    <div class="section-label">Try it now — it's free</div>
+    <h2 class="section-title">Paste your ad, get a better one</h2>
+    <p class="section-sub">Works for Google Ads, Meta, LinkedIn, email subject lines — any ad copy.</p>
+
+    <div class="input-card">
+      <div class="input-header">
+        <div class="input-icon">📝</div>
+        <div>
+          <div class="input-header-text">Your Ad Copy</div>
+          <div class="input-header-sub">Paste any headline, body, or full ad</div>
+        </div>
+      </div>
+
+      <textarea
+        id="adInput"
+        placeholder="Paste your ad copy here... e.g. 'Buy our shoes. Best quality. Click now.'"
+        oninput="updateCharCount(this)"
+        maxlength="2000"
+      ></textarea>
+      <div class="char-count"><span id="charCount">0</span> / 2000</div>
+
+      <button class="btn-analyze" id="analyzeBtn" onclick="analyzeAd()">
+        <div class="spinner" id="spinner"></div>
+        <span id="btnText">Analyze Ad →</span>
+      </button>
+    </div>
+  </section>
+
+  <!-- ── Results ── -->
+  <section id="results">
+    <div class="results-inner" id="resultsInner">
+      <!-- injected by JS -->
+    </div>
+  </section>
+
+  <!-- ── Footer ── -->
+  <footer>
+    <a href="#" class="logo">
+      <span class="logo-dot"></span>Ad Analyzer 🚀
+    </a>
+    <p>Built for marketers with limited budgets</p>
+    <p style="font-size:0.8rem; color: #3a3a4a;">© 2025 Ad Analyzer. All rights reserved.</p>
+  </footer>
+
+  <!-- SVG gradient defs (hidden) -->
+  <svg width="0" height="0" style="position:absolute">
+    <defs>
+      <linearGradient id="scoreGrad" x1="0%" y1="0%" x2="100%" y2="0%">
+        <stop offset="0%"   stop-color="#4ade80"/>
+        <stop offset="100%" stop-color="#22c55e"/>
+      </linearGradient>
+    </defs>
+  </svg>
+
+  <script>
+    /* ── Helpers ─────────────────────────────────────────── */
+    function scrollToAnalyzer() {
+      document.getElementById('analyzer').scrollIntoView({ behavior: 'smooth', block: 'start' });
+      setTimeout(() => document.getElementById('adInput').focus(), 600);
+    }
+
+    function updateCharCount(el) {
+      document.getElementById('charCount').textContent = el.value.length;
+    }
+
+    /* ── Analyze ─────────────────────────────────────────── */
+    async function analyzeAd() {
+      const adCopy = document.getElementById('adInput').value.trim();
+      if (!adCopy) {
+        shakeTextarea();
+        return;
+      }
+
+      setLoading(true);
+
+      try {
+        const res = await fetch('https://0unhqj2ao7.execute-api.ap-south-1.amazonaws.com/analyze', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ adCopy })
+        });
+
+        if (!res.ok) throw new Error(`Server responded with ${res.status}`);
+
+        const data = await res.json();
+        renderResults(data);
+      } catch (err) {
+        renderError(err.message);
+      } finally {
+        setLoading(false);
+      }
+    }
+
+    function setLoading(loading) {
+      const btn     = document.getElementById('analyzeBtn');
+      const spinner = document.getElementById('spinner');
+      const btnText = document.getElementById('btnText');
+
+      btn.disabled     = loading;
+      spinner.className = loading ? 'spinner active' : 'spinner';
+      btnText.textContent = loading ? 'Analyzing...' : 'Analyze Ad →';
+    }
+
+    /* ── Shake animation on empty submit ─────────────────── */
+    function shakeTextarea() {
+      const ta = document.getElementById('adInput');
+      ta.style.borderColor = 'rgba(248,124,109,0.6)';
+      ta.style.boxShadow   = '0 0 0 3px rgba(248,124,109,0.1)';
+      setTimeout(() => {
+        ta.style.borderColor = '';
+        ta.style.boxShadow   = '';
+      }, 1400);
+      ta.focus();
+    }
+
+    /* ── Render success results ───────────────────────────── */
+    function renderResults(data) {
+      const score       = extractScore(data);
+      const suggestions = extractSuggestions(data);
+      const improved    = extractImproved(data);
+
+      const container = document.getElementById('resultsInner');
+      container.innerHTML = buildResultsHTML(score, suggestions, improved);
+
+      const resultsEl = document.getElementById('results');
+      resultsEl.style.display = 'block';
+      resultsEl.scrollIntoView({ behavior: 'smooth', block: 'start' });
+
+      // Animate score ring
+      setTimeout(() => animateScore(score), 300);
+    }
+
+    function renderError(msg) {
+      const container = document.getElementById('resultsInner');
+      container.innerHTML = `
+        <div class="result-header">
+          <h2>Something went wrong</h2>
+          <p>Check your connection and try again.</p>
+        </div>
+        <div class="error-box">
+          <span>⚠️</span>
+          <span>${escHtml(msg || 'An unexpected error occurred.')}</span>
+        </div>`;
+      document.getElementById('results').style.display = 'block';
+      document.getElementById('results').scrollIntoView({ behavior: 'smooth' });
+    }
+
+    /* ── Extract helpers (flexible — works with various API shapes) */
+    function extractScore(data) {
+      // Numeric score between 0-100
+      if (typeof data.score === 'number') return Math.min(100, Math.max(0, data.score));
+      if (typeof data.score === 'string') {
+        const n = parseInt(data.score);
+        if (!isNaN(n)) return Math.min(100, Math.max(0, n));
+      }
+      // Try to find a number in the response body text
+      const raw = JSON.stringify(data);
+      const m = raw.match(/score["\s:]+(\d{1,3})/i);
+      return m ? Math.min(100, Math.max(0, parseInt(m[1]))) : null;
+    }
+
+    function extractSuggestions(data) {
+      if (Array.isArray(data.suggestions)) return data.suggestions;
+      if (Array.isArray(data.improvements)) return data.improvements;
+      if (typeof data.suggestions === 'string') return [data.suggestions];
+      if (data.feedback) {
+        if (Array.isArray(data.feedback)) return data.feedback;
+        return [data.feedback];
+      }
+      return [];
+    }
+
+    function extractImproved(data) {
+      return data.improvedVersion
+          || data.improved_version
+          || data.improved
+          || data.rewritten
+          || data.rewrittenAd
+          || data.betterVersion
+          || '';
+    }
+
+    /* ── Build HTML ──────────────────────────────────────── */
+    function buildResultsHTML(score, suggestions, improved) {
+      const scoreLabel = score === null ? '—'   :
+                         score >= 80    ? '🟢 Excellent' :
+                         score >= 60    ? '🟡 Good'      :
+                         score >= 40    ? '🟠 Fair'      : '🔴 Needs Work';
+
+      const scoreDesc = score === null ? 'Score unavailable for this response.' :
+                        score >= 80    ? 'Your ad copy is strong. Minor polish could push it further.' :
+                        score >= 60    ? 'Solid foundation. Apply the suggestions below to boost performance.' :
+                        score >= 40    ? 'There\'s clear room to improve. Follow the suggestions carefully.' :
+                        'Significant improvements needed. Use the rewritten version as your starting point.';
+
+      let suggestionsHTML = '';
+      if (suggestions.length) {
+        suggestionsHTML = `
+          <div class="card">
+            <div class="card-title">
+              <div class="card-icon icon-yellow">💡</div>
+              Suggestions (${suggestions.length})
+            </div>
+            <ul class="suggestions-list">
+              ${suggestions.map((s, i) => `
+                <li>
+                  <div class="suggestion-dot">${i + 1}</div>
+                  <span>${escHtml(typeof s === 'string' ? s : JSON.stringify(s))}</span>
+                </li>`).join('')}
+            </ul>
+          </div>`;
+      } else {
+        suggestionsHTML = `
+          <div class="card">
+            <div class="card-title">
+              <div class="card-icon icon-yellow">💡</div>
+              Suggestions
+            </div>
+            <p style="color:var(--muted);font-size:0.9rem;">No specific suggestions returned — check the improved version below.</p>
+          </div>`;
+      }
+
+      const improvedHTML = improved ? `
+        <div class="card">
+          <div class="card-title">
+            <div class="card-icon icon-green">✨</div>
+            Improved Version
+          </div>
+          <div class="improved-box" id="improvedText">${escHtml(improved)}</div>
+          <button class="copy-btn" id="copyBtn" onclick="copyImproved()">
+            📋 Copy to clipboard
+          </button>
+        </div>` : '';
+
+      return `
+        <div class="result-header">
+          <h2>Analysis Complete ✦</h2>
+          <p>Here's what we found about your ad copy</p>
+        </div>
+
+        <!-- Score card -->
+        <div class="score-card">
+          <div class="score-ring">
+            <svg viewBox="0 0 100 100" width="100" height="100">
+              <circle class="ring-bg"   cx="50" cy="50" r="45"/>
+              <circle class="ring-fill" cx="50" cy="50" r="45" id="scoreRing"/>
+            </svg>
+            <div class="score-value">
+              <div class="score-num" id="scoreNum">${score !== null ? score : '—'}</div>
+              <div class="score-label">/ 100</div>
+            </div>
+          </div>
+          <div class="score-info">
+            <h3>${scoreLabel}</h3>
+            <p>${scoreDesc}</p>
+          </div>
+        </div>
+
+        ${suggestionsHTML}
+        ${improvedHTML}
+      `;
+    }
+
+    /* ── Animate score ring ──────────────────────────────── */
+    function animateScore(score) {
+      if (score === null) return;
+      const ring = document.getElementById('scoreRing');
+      if (!ring) return;
+      const circumference = 2 * Math.PI * 45; // ~283
+      const offset = circumference - (score / 100) * circumference;
+      ring.style.strokeDashoffset = offset;
+
+      // Colour the score number
+      const numEl = document.getElementById('scoreNum');
+      if (numEl) {
+        numEl.style.color = score >= 80 ? '#4ade80' :
+                            score >= 60 ? '#f5a623' :
+                            score >= 40 ? '#fb923c' : '#f87c6d';
+      }
+
+      // Count-up animation
+      let current = 0;
+      const step = score / 60;
+      const timer = setInterval(() => {
+        current = Math.min(current + step, score);
+        if (numEl) numEl.textContent = Math.round(current);
+        if (current >= score) clearInterval(timer);
+      }, 16);
+    }
+
+    /* ── Copy improved text ──────────────────────────────── */
+    function copyImproved() {
+      const text = document.getElementById('improvedText').textContent;
+      navigator.clipboard.writeText(text).then(() => {
+        const btn = document.getElementById('copyBtn');
+        btn.textContent = '✅ Copied!';
+        btn.classList.add('copied');
+        setTimeout(() => {
+          btn.textContent = '📋 Copy to clipboard';
+          btn.classList.remove('copied');
+        }, 2200);
+      });
+    }
+
+    /* ── Escape HTML ─────────────────────────────────────── */
+    function escHtml(str) {
+      return String(str)
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;');
+    }
+
+    /* ── Intersection observer for subtle scroll animations ── */
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        if (e.isIntersecting) {
+          e.target.style.animation = 'fade-up 0.7s ease both';
+          observer.unobserve(e.target);
+        }
+      });
+    }, { threshold: 0.12 });
+
+    document.querySelectorAll('.feature-card').forEach(el => {
+      el.style.opacity = '0';
+      observer.observe(el);
+    });
+  </script>
+</body>
+</html>
